@@ -14,10 +14,14 @@ def build_wrapper(kernel, setinfo, *arginfos,
         builder.add_argument(info, access_mode)
     builder.set_kernel(kernel)
 
-    wrapper = generate(builder)
-    return loopy.generate_code_v2(wrapper).device_code()
+    return generate(builder)
 
 
 # TODO: cffi has lower overhead than ctypes calling,
 # but the interface doesn't have a nice way for us to control where
 # things are written. Everything goes via files.
+def get_c_function(wrapper, argtypes, extension="c"):
+    from pyop2.compilation import load
+    name = wrapper.name
+    code = loopy.generate_code_v2(wrapper).device_code()
+    return load(code, extension, name, argtypes=argtypes)

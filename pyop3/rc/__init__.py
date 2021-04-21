@@ -1,1 +1,1 @@
-configuration = {"runtime_checking": True}
+configuration = {"runtime_checking": False}

@@ -733,6 +733,7 @@ class WrapperBuilder(object):
 
     def map_(self, mapinfo, unroll=False):
         if mapinfo is None:
+            # Direct (identity map)
             return None
         interior_horizontal = self.iteration_region == IterationRegion.INTERIOR_FACETS
         try:

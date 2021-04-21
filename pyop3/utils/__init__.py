@@ -1,3 +1,5 @@
+from functools import wraps
+
 from pyop3.rc import configuration
 
 
@@ -18,10 +20,17 @@ class cached_property(object):
         return obj.__dict__.setdefault(self.__name__, self.fget(obj))
 
 
-def check_args(predicate):
+def check_args(valid):
+    """
+    Decorator for validation of arguments.
+
+    :arg valid: Function with same signature as decoratee that asserts
+         correctness of arguments.
+    """
     def validator(fn):
+        @wraps(fn)
         def wrapper(*args, **kwargs):
-            predicate(*args, **kwargs)
+            valid(*args, **kwargs)
             return fn(*args, **kwargs)
         return wrapper
     return validator
@@ -29,8 +38,12 @@ def check_args(predicate):
 
 if configuration["runtime_checking"]:
     debug_check_args = check_args
+    """Decorator for validation of arguments at runtime."""
 else:
     def debug_check_args(predicate):
+        """
+        No-op decorator skipping runtime validation of arguments.
+        """
         def noop(fn):
             return fn
         return noop

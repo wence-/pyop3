@@ -461,7 +461,7 @@ def generate(builder, wrapper_name=None):
     # register kernel
     kernel = builder.kernel
     headers = set(kernel.headers)
-    headers = headers | set(["#include <math.h>", "#include <complex.h>", "#include <petsc.h>"])
+    headers = headers | set(["#include <math.h>", "#include <complex.h>"])
     preamble = "\n".join(sorted(headers))
 
     from coffee.base import Node
@@ -489,18 +489,6 @@ def generate(builder, wrapper_name=None):
     wrapper = loopy.register_function_id_to_in_knl_callable_mapper(wrapper, petsc_function_lookup)
 
     return wrapper
-
-
-def argtypes(kernel):
-    args = []
-    for arg in kernel.args:
-        if isinstance(arg, loopy.ValueArg):
-            args.append(as_ctypes(arg.dtype))
-        elif isinstance(arg, loopy.ArrayArg):
-            args.append(ctypes.c_voidp)
-        else:
-            raise ValueError("Unhandled arg type '%s'" % type(arg))
-    return args
 
 
 @singledispatch
